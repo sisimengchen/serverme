@@ -7,7 +7,7 @@ import (
 	// "github.com/dgrijalva/jwt-go"
 )
 
-func RoutesInit(app *iris.Application)  {
+func RoutesInit(app *iris.Application) {
 	// favicon
 	app.Favicon("./static/favicon.ico")
 	// 静态资源
@@ -24,13 +24,13 @@ func RoutesInit(app *iris.Application)  {
 		})
 	}
 	// api路由（接口层）
-    api := app.Party("/api", middleware.Auth, middleware.Cros())
+	api := app.Party("/api", middleware.Auth, middleware.Cros())
 	{
 		api.Get("/auth/ping", func(ctx iris.Context) {
 			// user := ctx.Values().Get("jwt").(*jwt.Token)
 			user := ctx.Values().Get("user").(models.User)
 			ctx.JSON(iris.Map{
-				"message": "apipong",
+				"message":  "apipong",
 				"username": user.Username,
 				// "user": user,
 			})

@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/kataras/iris/context"
 	"github.com/iris-contrib/middleware/cors"
+	"github.com/kataras/iris/context"
 )
 
 // https://github.com/iris-contrib/middleware/blob/master/cors/cors.go

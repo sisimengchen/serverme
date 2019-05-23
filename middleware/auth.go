@@ -2,10 +2,10 @@ package middleware
 
 import (
 	// "fmt"
-	"github.com/kataras/iris"
 	"github.com/gorilla/securecookie"
-	"github.com/sisimengchen/serverme/utils"
+	"github.com/kataras/iris"
 	"github.com/sisimengchen/serverme/models"
+	"github.com/sisimengchen/serverme/utils"
 )
 
 var (
@@ -15,20 +15,20 @@ var (
 	blockKey  = []byte("lot-secret-of-characters-big-too")
 	sc        = securecookie.New(hashKey, blockKey)
 	debugUser = models.User{
-		Name: "debugName", 
-		Username: "debugUsername", 
+		Name:     "debugName",
+		Username: "debugUsername",
 		Password: "debugPassword",
 	}
-	realUser  = models.User{
-		Name: "mengchen", 
-		Username: "mengchen", 
+	realUser = models.User{
+		Name:     "mengchen",
+		Username: "mengchen",
 		Password: "mengchen",
 	}
 )
 
 func Auth(ctx iris.Context) {
 	// fmt.Println("Auth middleware")
-	// ctx.SetCookieKV("fess", "fess", iris.CookieEncode(sc.Encode)) 
+	// ctx.SetCookieKV("fess", "fess", iris.CookieEncode(sc.Encode))
 	// 需要做权限验证
 	if utils.IsAuthRequest(ctx) {
 		// fmt.Println("Auth valadate")
@@ -36,12 +36,12 @@ func Auth(ctx iris.Context) {
 		// 如果开启了debug模式
 		if debugmode == "debugmode" {
 			ctx.Values().Set("user", debugUser)
-			ctx.Next();
+			ctx.Next()
 		} else {
 			fess := ctx.GetCookie("fess", iris.CookieDecode(sc.Decode))
 			if fess == "fess" {
 				ctx.Values().Set("user", realUser)
-				ctx.Next();
+				ctx.Next()
 			} else {
 				if utils.IsApiRequest(ctx) {
 					ctx.JSON(iris.Map{
@@ -53,7 +53,7 @@ func Auth(ctx iris.Context) {
 			}
 		}
 	} else {
-		ctx.Next();
+		ctx.Next()
 	}
-	
+
 }

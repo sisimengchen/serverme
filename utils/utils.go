@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"regexp"
 	"github.com/kataras/iris"
+	"regexp"
 )
 
 var authRegexp = regexp.MustCompile(`.*/auth/.*`)

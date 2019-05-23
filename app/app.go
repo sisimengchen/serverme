@@ -18,7 +18,7 @@ func RegisterErrors(app *iris.Application) {
 	app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
 		ctx.HTML(notFoundHTML)
 	})
-    // 500处理
+	// 500处理
 	app.OnErrorCode(iris.StatusInternalServerError, func(ctx iris.Context) {
 		ctx.HTML(internalServerErrorHTML)
 	})
@@ -29,11 +29,11 @@ func RegisterMiddleware(app *iris.Application) {
 	app.Use(recover.New())
 	// 日志中间件
 	app.Use(logger.New())
-    // // 鉴权中间件
+	// // 鉴权中间件
 	// app.UseGlobal(middleware.Auth)
 }
 
-func AppInit() *iris.Application{
+func AppInit() *iris.Application {
 	// 创建iris应用
 	app := iris.New()
 	// 注册中间件
