@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/kataras/iris"
+	"github.com/sisimengchen/serverme/controllers"
 	"github.com/sisimengchen/serverme/middleware"
-	"github.com/sisimengchen/serverme/models"
 	// "github.com/dgrijalva/jwt-go"
 )
 
@@ -26,14 +26,9 @@ func RoutesInit(app *iris.Application) {
 	// api路由（接口层）
 	api := app.Party("/api", middleware.Auth, middleware.Cros())
 	{
-		api.Get("/auth/ping", func(ctx iris.Context) {
-			// user := ctx.Values().Get("jwt").(*jwt.Token)
-			user := ctx.Values().Get("user").(models.User)
-			ctx.JSON(iris.Map{
-				"message":  "apipong",
-				"username": user.Username,
-				// "user": user,
-			})
-		})
+		api.Post("/login", controllers.UserLogin)
+		api.Get("/logout", controllers.UserLogout)
+		api.Post("/reg", controllers.UserCreate)
+		api.Get("/auth/user", controllers.UserInfo)
 	}
 }

@@ -75,6 +75,14 @@
 			"revisionTime": "2019-05-05T15:27:37Z"
 		},
 		{
+			"checksumSHA1": "Kh/EnzmngEgl6DxIndgpflFLm00=",
+			"path": "github.com/google/uuid",
+			"revision": "0cd6bf5da1e1c83f8b45653022c74f71af0538a4",
+			"revisionTime": "2019-02-27T21:05:49Z",
+			"version": "v1.1.1",
+			"versionExact": "v1.1.1"
+		},
+		{
 			"checksumSHA1": "NScdwrIOpSH9hoP7i3a6JGmE5rw=",
 			"path": "github.com/gorilla/securecookie",
 			"revision": "e65cf8c5df817c89aeb47ecb46064e802e2de943",
@@ -115,6 +123,18 @@
 			"path": "github.com/iris-contrib/middleware/jwt",
 			"revision": "8bd5d51b3c2e8ea5ed91036b42ea8b884b597ef8",
 			"revisionTime": "2018-10-21T16:27:28Z"
+		},
+		{
+			"checksumSHA1": "7PNL0WPSWAV0RgtXDVnMtu3uMjo=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "b7156195f7f3415f97c20abbd6aff894b847fee8",
+			"revisionTime": "2019-05-08T07:12:19Z"
+		},
+		{
+			"checksumSHA1": "4eelJOSLZoDzLuaJvgilOBVNovU=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"revisionTime": "2018-03-08T03:36:59Z"
 		},
 		{
 			"checksumSHA1": "Eucy6LI1omp1xZtQQzobtKegMTM=",
@@ -355,6 +375,10 @@
 			"path": "github.com/klauspost/cpuid",
 			"revision": "05a8198c0f5a27739aec358908d7e12c64ce6eb7",
 			"revisionTime": "2019-04-22T09:51:56Z"
+		},
+		{
+			"path": "github.com/mattn/go-sqlite3",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "AaA9Jzr9zRQYRxG2l4bV1yMTjis=",

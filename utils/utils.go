@@ -1,17 +1,10 @@
 package utils
 
 import (
-	"github.com/kataras/iris"
-	"regexp"
+	"github.com/google/uuid"
 )
 
-var authRegexp = regexp.MustCompile(`.*/auth/.*`)
-var apiRegexp = regexp.MustCompile(`^/api/.*`)
-
-func IsApiRequest(ctx iris.Context) bool {
-	return apiRegexp.MatchString(ctx.Path())
-}
-
-func IsAuthRequest(ctx iris.Context) bool {
-	return authRegexp.MatchString(ctx.Path())
+// 获取一个uuid字符串
+func GetUUID() string {
+	return uuid.New().String()
 }
