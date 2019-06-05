@@ -1,9 +1,12 @@
 package utils
 
 import (
+	"strings"
+	// "errors"
+	"regexp"
+	// "net/http"
 	"github.com/gorilla/securecookie"
 	"github.com/kataras/iris"
-	"regexp"
 )
 
 var (
@@ -51,4 +54,14 @@ func SetCookie(ctx iris.Context, name, value string) {
 // 删除cookie
 func RemoveCookie(ctx iris.Context, name string) {
 	ctx.RemoveCookie(name)
+}
+
+// 获取请求完成路径
+func GetFullPath(ctx iris.Context) string {
+	request := ctx.Request()
+	scheme  := "http://"
+	if request.TLS != nil {
+        scheme = "https://"
+    }
+	return strings.Join([]string{scheme, request.Host, request.RequestURI}, "")
 }

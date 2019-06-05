@@ -6,52 +6,28 @@ import (
 	"github.com/sisimengchen/serverme/utils"
 )
 
-var (
-	debugUser = models.User{
-		ID:       utils.GetUUID(),
-		Email:    "debuguser@gmail.com",
-		Name:     "debugusername",
-		Password: "debuguserpassword",
-	}
-)
+// var (
+// 	debugUser = models.Users{
+// 		ID:       utils.GetUUID(),
+// 		Email:    "debuguser@gmail.com",
+// 		Name:     "debugusername",
+// 	}
+// )
 
 func Auth(ctx iris.Context) {
 	// 判断是否是需要做权限验证的path
 	if utils.IsAuthRequest(ctx) {
-		// 如果开启了debugmode模式
-		debugmode := utils.GetCookie(ctx, "debugmode")
-		// 如果开启了debug模式
-		if debugmode == "debugmode" {
-			ctx.Values().Set("user", debugUser)
-			ctx.Next()
+		fess := utils.GetSecureCookie(ctx, "fess")
+		if len(fess) > 0 {
+			user, err := models.GetUserByID(fess)
+			if err == nil {
+				ctx.Values().Set("contextUser", *user)
+			}
 		} else {
-			fess := utils.GetSecureCookie(ctx, "fess")
-			if fess != "" {
-				user := models.GetUserById(fess)
-				if user != nil {
-					ctx.Values().Set("user", *user)
-					ctx.Next()
-				} else {
-					if utils.IsApiRequest(ctx) {
-						ctx.JSON(iris.Map{
-							"message": "nologin",
-						})
-					} else {
-						ctx.Redirect("/login")
-					}
-				}
-			} else {
-				if utils.IsApiRequest(ctx) {
-					ctx.JSON(iris.Map{
-						"message": "nologin",
-					})
-				} else {
-					ctx.Redirect("/login")
-				}
+			if !utils.IsApiRequest(ctx) {
+				ctx.Redirect("/login")
 			}
 		}
-	} else {
-		ctx.Next()
 	}
-
+	ctx.Next()
 }
