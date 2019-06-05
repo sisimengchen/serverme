@@ -13,8 +13,6 @@ func RoutesInit(app *iris.Application) {
 	app.Favicon("./static/favicon.ico")
 	// 静态资源
 	app.StaticWeb("/static", "./static")
-	// 上传资源
-	// app.StaticWeb("/uploads", "./uploads")
 	// 单页路由
 	app.Get("/", middleware.Auth, func(ctx iris.Context) {
 		ctx.View("index.html")
@@ -71,12 +69,5 @@ func RoutesInit(app *iris.Application) {
 			bookcatalog.Get("/get", controllers.GetBookCatalogByID)
 			bookcatalog.Get("/getall", controllers.GetBookCatalogs)
 		}
-		// api.Get("/jwt", func(ctx iris.Context) {
-		// 	token := ctx.Values().Get("jwt").(*jwt.Token)
-		// 	ctx.Writef("This is an authenticated request\n")
-        //     ctx.Writef("Claim content:\n")
-        //     //可以了解一下token的数据结构
-        //     ctx.Writef("%s", token)
-		// })
 	}
 }
