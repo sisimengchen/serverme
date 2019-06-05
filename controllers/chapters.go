@@ -9,11 +9,6 @@ import (
 
 // 创建文章
 func CreateChapter(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	title := ctx.FormValue("title")
 	if len(title) == 0 {
 		ctx.JSON(ResponseResource(400, "require title", nil))
@@ -33,11 +28,6 @@ func CreateChapter(ctx iris.Context) {
 }
 
 func GetChapterByID(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	id := ctx.URLParam("id")
 	if len(id) == 0 {
 		ctx.JSON(ResponseResource(400, "require id", nil))
@@ -52,11 +42,6 @@ func GetChapterByID(ctx iris.Context) {
 }
 
 func GetChapterByTitle(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	title := ctx.URLParam("title")
 	if len(title) == 0 {
 		ctx.JSON(ResponseResource(400, "require title", nil))
@@ -71,11 +56,6 @@ func GetChapterByTitle(ctx iris.Context) {
 }
 
 func GetChaptersByBookId(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	bookId := ctx.URLParam("bookId")
 	if len(bookId) == 0 {
 		ctx.JSON(ResponseResource(400, "require bookId", nil))
@@ -90,11 +70,6 @@ func GetChaptersByBookId(ctx iris.Context) {
 }
 
 func GetChapterContent(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	chapterId := ctx.FormValue("chapterId")
 	bookId := ctx.FormValue("bookId")
 	path := filepath.Join("./bookstore", bookId, chapterId)
@@ -102,11 +77,6 @@ func GetChapterContent(ctx iris.Context) {
 }
 
 func SetChapterPath(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	chapterId := ctx.FormValue("chapterId")
 	if len(chapterId) == 0 {
 		ctx.JSON(ResponseResource(400, "require chapterId", nil))

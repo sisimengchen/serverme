@@ -40,11 +40,6 @@ func CreateBook(ctx iris.Context) {
 }
 
 func GetBookByID(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	id := ctx.URLParam("id")
 	if len(id) == 0 {
 		ctx.JSON(ResponseResource(400, "require id", nil))
@@ -59,11 +54,6 @@ func GetBookByID(ctx iris.Context) {
 }
 
 func GetBooksByName(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	name := ctx.URLParam("name")
 	if len(name) == 0 {
 		ctx.JSON(ResponseResource(400, "require id", nil))
@@ -78,11 +68,6 @@ func GetBooksByName(ctx iris.Context) {
 }
 
 func GetBooksByCatalogId(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	catalogId := ctx.URLParam("catalogId")
 	if len(catalogId) == 0 {
 		ctx.JSON(ResponseResource(400, "require catalogId", nil))
@@ -97,11 +82,6 @@ func GetBooksByCatalogId(ctx iris.Context) {
 }
 
 func GetBooks(ctx iris.Context) {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
 	books, err := models.GetBooks(&models.Books{})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
