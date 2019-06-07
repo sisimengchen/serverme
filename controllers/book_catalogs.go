@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/kataras/iris"
 	"github.com/sisimengchen/serverme/models"
+	"github.com/sisimengchen/serverme/utils/pagination"
 )
 
 func CreateBookCatalog(ctx iris.Context) {
@@ -34,7 +35,8 @@ func GetBookCatalogByID(ctx iris.Context) {
 }
 
 func GetBookCatalogs(ctx iris.Context) {
-	bookCatalogs, err := models.GetBookCatalogs(&models.BookCatalogs{})
+	offset, limit := pagination.GetPage(ctx)
+	bookCatalogs, err := models.GetBookCatalogs(offset, limit, &models.BookCatalogs{})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {

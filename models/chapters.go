@@ -51,9 +51,9 @@ func GetChapter(chapter *Chapters) (*Chapters, error) {
 }
 
 // 查询章节列表
-func GetChapters(chapter *Chapters) (*[]Chapters, error) {
-	chapters := []Chapters{}
-	if err := database.DB.Preload("Book").Preload("Book.Author").Preload("Book.Catalog").Where(chapter).Find(&chapters).Error; err != nil {
+func GetChapters(offset int, limit int, chapter *Chapters) (*[]Chapters, error) {
+	chapters := []Chapters{}	
+	if err := database.DB.Preload("Book").Preload("Book.Author").Preload("Book.Catalog").Where(chapter).Offset(offset).Limit(limit).Find(&chapters).Error; err != nil {
 		fmt.Printf("GetUserByIdErr:%s", err)
 		return nil, err
 	}

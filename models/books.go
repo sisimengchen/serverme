@@ -62,9 +62,9 @@ func GetBook(book *Books) (*Books, error) {
 }
 
 // 查询图书列表
-func GetBooks(book *Books) (*[]Books, error) {
+func GetBooks(offset int, limit int, book *Books) (*[]Books, error) {
 	books := []Books{}
-	if err := database.DB.Preload("Author").Preload("Catalog").Where(book).Find(&books).Error; err != nil {
+	if err := database.DB.Preload("Author").Preload("Catalog").Where(book).Offset(offset).Limit(limit).Find(&books).Error; err != nil {
 		fmt.Printf("GetBooksByCatalogIdErr:%s", err)
 		return nil, err
 	}

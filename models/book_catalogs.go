@@ -46,9 +46,9 @@ func GetBookCatalog(bookCatalog *BookCatalogs) (*BookCatalogs, error) {
 }
 
 // 获取或有图书分类
-func GetBookCatalogs(bookCatalog *BookCatalogs) (*[]BookCatalogs, error) {
+func GetBookCatalogs(offset int, limit int, bookCatalog *BookCatalogs) (*[]BookCatalogs, error) {
 	bookCatalogs := []BookCatalogs{}
-	if err := database.DB.Where(bookCatalog).Find(&bookCatalogs).Error; err != nil {
+	if err := database.DB.Where(bookCatalog).Offset(offset).Limit(limit).Find(&bookCatalogs).Error; err != nil {
 		fmt.Printf("GetBookCatalogsErr:%s", err)
 		return nil, err
 	}

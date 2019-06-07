@@ -38,7 +38,6 @@ func RegisterMiddleware(app *iris.Application) {
 func RegisterDatabase(app *iris.Application) {
 	database.DB.AutoMigrate(
 		&models.Users{},
-		&models.Configures{},
 		&models.BookCatalogs{},
 		&models.Books{},
 		&models.Chapters{},

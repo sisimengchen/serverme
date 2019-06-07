@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 	"github.com/kataras/iris"
 	"github.com/sisimengchen/serverme/models"
+	"github.com/sisimengchen/serverme/utils/pagination"
 )
 
 // 创建文章
@@ -61,7 +62,8 @@ func GetChaptersByBookId(ctx iris.Context) {
 		ctx.JSON(ResponseResource(400, "require bookId", nil))
 		return
 	}
-	chapters, err := models.GetChapters(&models.Chapters{BookId: bookId})
+	offset, limit := pagination.GetPage(ctx)
+	chapters, err := models.GetChapters(offset, limit, &models.Chapters{BookId: bookId})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {

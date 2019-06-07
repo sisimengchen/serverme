@@ -69,13 +69,12 @@ func CreateUser(ctx iris.Context) {
 		ctx.JSON(ResponseResource(400, "require password", nil))
 		return
 	}
-	user, err := models.GetUser(&models.Users{ Email: email })
+	user, _ := models.GetUser(&models.Users{ Email: email })
 	if user != nil {
-		ctx.JSON(ResponseResource(400, "another email", nil))
+		ctx.JSON(ResponseResource(400, "another email", user))
 		return
 	}
-	user.Password = password
-	user, err = models.CreateUser(user)
+	user, err := models.CreateUser(&models.Users{ Email: email, Password: password })
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {

@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/kataras/iris"
 	"github.com/sisimengchen/serverme/models"
+	"github.com/sisimengchen/serverme/utils/pagination"
 )
 
 func CreateBook(ctx iris.Context) {
@@ -59,7 +60,8 @@ func GetBooksByName(ctx iris.Context) {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
 	}
-	books, err := models.GetBooks(&models.Books{Name: name })
+	offset, limit := pagination.GetPage(ctx)
+	books, err := models.GetBooks(offset, limit, &models.Books{Name: name })
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -73,7 +75,8 @@ func GetBooksByCatalogId(ctx iris.Context) {
 		ctx.JSON(ResponseResource(400, "require catalogId", nil))
 		return
 	}
-	books, err := models.GetBooks(&models.Books{CatalogId: catalogId })
+	offset, limit := pagination.GetPage(ctx)
+	books, err := models.GetBooks(offset, limit, &models.Books{CatalogId: catalogId })
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -82,7 +85,8 @@ func GetBooksByCatalogId(ctx iris.Context) {
 }
 
 func GetBooks(ctx iris.Context) {
-	books, err := models.GetBooks(&models.Books{})
+	offset, limit := pagination.GetPage(ctx)
+	books, err := models.GetBooks(offset, limit, &models.Books{})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {

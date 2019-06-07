@@ -21,5 +21,6 @@ func New() *gorm.DB {
 	} else {
 		fmt.Println("sqlite3 ok")
 	}
+	DB.LogMode(true)
 	return DB
 }

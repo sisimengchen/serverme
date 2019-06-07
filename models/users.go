@@ -63,9 +63,9 @@ func GetUser(user *Users) (*Users, error) {
 }
 
 // 查询所有用户
-func GetUsers(user *Users) (*[]Users, error) {
+func GetUsers(offset int, limit int, user *Users) (*[]Users, error) {
 	users := []Users{}
-	if err := database.DB.Where(user).Find(&users).Error; err != nil {
+	if err := database.DB.Where(user).Offset(offset).Limit(limit).Find(&users).Error; err != nil {
 		fmt.Printf("GetUserByIdErr:%s", err)
 		return nil, err
 	}
