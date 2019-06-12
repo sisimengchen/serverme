@@ -1,16 +1,34 @@
 package pagination
 
 import (
-	"fmt"
 	"strconv"
-	"github.com/kataras/iris"
+	"github.com/gin-gonic/gin"
+	"github.com/sisimengchen/serverme/configs"
 )
 
-const DefaultPageSize = "20"
+var (
+	defaultPageSize = configs.Viper.GetString("pageSize")
+)
 
-func GetPage(ctx iris.Context) (int, int) {
-	pageSize := ctx.URLParamDefault("pageSize", DefaultPageSize)
-	pageNum := ctx.URLParamDefault("pageNum", "1")
+// type PaginationResponse struct {
+// 	List         []interface{}    `json:"list"`
+// 	PageNum      int64            `json:"pageNum"`
+// 	PageSize     string           `json:"pageSize"`
+// 	TotalCount   string           `json:"totalCount"`
+// 	TotalPage    string           `json:"totalPage"`
+// }
+
+// func PaginationResource(code int, msg string, data interface{}) (int, interface{}) {
+// 	return 200, gin.H{
+// 		"code": code,
+// 		"msg":  msg,
+// 		"data": data,
+// 	}
+// }
+
+func GetPage(ctx *gin.Context) (int, int) {
+	pageSize := ctx.DefaultQuery("pageSize", defaultPageSize)
+	pageNum := ctx.DefaultQuery("pageNum", "1")
 	// 限制一页返回的数量，如果返回的非法值，则设置为 -1
 	limit, err := strconv.Atoi(pageSize)
 	if err != nil {
@@ -22,6 +40,5 @@ func GetPage(ctx iris.Context) (int, int) {
 	} else {
 		offset = (offset - 1) * limit
 	}
-	fmt.Printf("GetPage:%d,%d", offset, limit)
 	return offset, limit
 }

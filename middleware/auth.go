@@ -1,29 +1,32 @@
 package middleware
 
 import (
-	"github.com/kataras/iris"
+	"github.com/gin-gonic/gin"
+	"github.com/sisimengchen/serverme/controllers"
 	"github.com/sisimengchen/serverme/models"
 	"github.com/sisimengchen/serverme/utils"
-	"github.com/sisimengchen/serverme/controllers"
+	"net/http"
 )
 
-func Auth(ctx iris.Context) {
-	// 判断是否是需要做权限验证的path
-	if utils.IsAuthRequest(ctx) {
-		id := utils.GetSecureCookie(ctx, "fess")
+// 重定向的url之后要做成可配置
+func Auth() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		id, _ := ctx.Cookie("fess")
 		if len(id) > 0 {
-			user, err := models.GetUser(&models.Users{ ID: id })
+			user, err := models.GetUser(&models.Users{ID: id})
 			if err == nil {
-				ctx.Values().Set("contextUser", *user)
+				ctx.Set("contextUser", *user)
+				ctx.Next()
+				return
 			}
 		} else {
 			if !utils.IsApiRequest(ctx) {
-				ctx.Redirect("/page/login")
+				ctx.Redirect(http.StatusFound, "/page/login")
 			} else {
-				ctx.JSON(controllers.ResponseResource(401, "unlogin", nil))
+				ctx.JSON(controllers.ResponseResource(http.StatusUnauthorized, "unlogin", nil))
 			}
+			ctx.Abort()
 			return
 		}
 	}
-	ctx.Next()
 }

@@ -2,17 +2,17 @@ package models
 
 import (
 	"fmt"
-	"time"
 	"github.com/sisimengchen/serverme/database"
-	"github.com/sisimengchen/serverme/utils" 
+	"github.com/sisimengchen/serverme/utils"
+	"time"
 )
 
 type BookCatalogs struct {
-	ID              string     `gorm:"type:varchar(100);primary_key;" json:"id"`
-	Name            string     `gorm:"type:varchar(100);not null;unique_index;" json:"name"`
-	CreatedAt       *time.Time `json:"-"`
-	UpdatedAt       *time.Time `json:"-"`
-	DeletedAt       *time.Time `json:"-"`
+	ID        string     `gorm:"type:varchar(100);primary_key;" json:"id"`
+	Name      string     `gorm:"type:varchar(100);not null;unique_index;" json:"name"`
+	CreatedAt *time.Time `json:"-"`
+	UpdatedAt *time.Time `json:"-"`
+	DeletedAt *time.Time `json:"-"`
 }
 
 // 创建分类

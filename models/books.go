@@ -5,28 +5,28 @@ import (
 	"time"
 	// "errors"
 	"github.com/sisimengchen/serverme/database"
-	"github.com/sisimengchen/serverme/utils" 
+	"github.com/sisimengchen/serverme/utils"
 )
 
 type Books struct {
-	ID              string        `gorm:"type:varchar(100);primary_key;" json:"id"`
-	AuthorId        string        `json:"-"`
-	Author          *Users        `gorm:"association_foreignkey:ID" json:"author"`
-	Name            string        `gorm:"type:varchar(100);not null;" json:"name"`
-	Description     string        `gorm:"type:varchar(100);not null;" json:"description"`
-	State           int           `gorm:"type:int(11);default:'0'" json:"state"`
-	Read            int           `gorm:"type:int(11);default:'0'" json:"read"`
-	Push            int           `gorm:"type:int(11);default:'0'" json:"push"`
-	CatalogId       string        `json:"-"`
-	Catalog         *BookCatalogs `gorm:"association_foreignkey:ID" json:"catalog"`
-	WordCount       int           `gorm:"type:int(11);default:'0'" json:"wordCount"`
-	ChapterCount    int           `gorm:"type:int(11);default:'0'" json:"chapterCount"`
-	Cover           string        `gorm:"type:text;" json:"cover"`
-	CreatedBy       string        `gorm:"type:varchar(100);" json:"createdBy"`
-	UpdatedBy       string        `gorm:"type:varchar(100);" json:"updatedBy"`
-	CreatedAt       *time.Time    `json:"createdAt"`
-	UpdatedAt       *time.Time    `json:"updatedAt"`
-	DeletedAt       *time.Time    `json:"-"`
+	ID           string        `gorm:"type:varchar(100);primary_key;" json:"id"`
+	AuthorId     string        `json:"-"`
+	Author       *Users        `gorm:"association_foreignkey:ID" json:"author"`
+	Name         string        `gorm:"type:varchar(100);not null;" json:"name"`
+	Description  string        `gorm:"type:varchar(100);not null;" json:"description"`
+	State        int           `gorm:"type:int(11);default:'0'" json:"state"`
+	Read         int           `gorm:"type:int(11);default:'0'" json:"read"`
+	Push         int           `gorm:"type:int(11);default:'0'" json:"push"`
+	CatalogId    string        `json:"-"`
+	Catalog      *BookCatalogs `gorm:"association_foreignkey:ID" json:"catalog"`
+	WordCount    int           `gorm:"type:int(11);default:'0'" json:"wordCount"`
+	ChapterCount int           `gorm:"type:int(11);default:'0'" json:"chapterCount"`
+	Cover        string        `gorm:"type:text;" json:"cover"`
+	CreatedBy    string        `gorm:"type:varchar(100);" json:"createdBy"`
+	UpdatedBy    string        `gorm:"type:varchar(100);" json:"updatedBy"`
+	CreatedAt    *time.Time    `json:"createdAt"`
+	UpdatedAt    *time.Time    `json:"updatedAt"`
+	DeletedAt    *time.Time    `json:"-"`
 }
 
 // 创建图书

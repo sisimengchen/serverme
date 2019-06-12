@@ -2,9 +2,9 @@ package models
 
 import (
 	"fmt"
-	"time"
 	"github.com/sisimengchen/serverme/database"
 	"github.com/sisimengchen/serverme/utils"
+	"time"
 )
 
 type Users struct {

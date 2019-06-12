@@ -5,8 +5,9 @@ import (
 	// "errors"
 	"regexp"
 	// "net/http"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
-	"github.com/kataras/iris"
+	// "github.com/kataras/iris"
 )
 
 var (
@@ -20,48 +21,52 @@ var (
 )
 
 // 判断是否是api调用
-func IsApiRequest(ctx iris.Context) bool {
-	return apiRegexp.MatchString(ctx.Path())
+func IsApiRequest(ctx *gin.Context) bool {
+	return apiRegexp.MatchString(ctx.Request.RequestURI)
 }
 
 // 判断是否需要校验登录
-func IsAuthRequest(ctx iris.Context) bool {
-	return authRegexp.MatchString(ctx.Path())
+func IsAuthRequest(ctx *gin.Context) bool {
+	return authRegexp.MatchString(ctx.Request.RequestURI)
 }
 
-// 获取加密cookie
-func GetSecureCookie(ctx iris.Context, name string) string {
-	value := ctx.GetCookie(name, iris.CookieDecode(sc.Decode))
-	return value
-}
+// func SetCookie(ctx *gin.Context) {
 
-// 设置加密cookie
-func SetSecureCookie(ctx iris.Context, name, value string) {
-	ctx.SetCookieKV(name, value, iris.CookieEncode(sc.Encode))
-}
+// }
 
-// 获取cookie
-func GetCookie(ctx iris.Context, name string) string {
-	value := ctx.GetCookie(name)
-	return value
-}
+// // 获取加密cookie
+// func GetSecureCookie(ctx iris.Context, name string) string {
+// 	value := ctx.GetCookie(name, iris.CookieDecode(sc.Decode))
+// 	return value
+// }
 
-// 设置cookie
-func SetCookie(ctx iris.Context, name, value string) {
-	ctx.SetCookieKV(name, value)
-}
+// // 设置加密cookie
+// func SetSecureCookie(ctx iris.Context, name, value string) {
+// 	ctx.SetCookieKV(name, value, iris.CookieEncode(sc.Encode))
+// }
+
+// // 获取cookie
+// func GetCookie(ctx iris.Context, name string) string {
+// 	value := ctx.GetCookie(name)
+// 	return value
+// }
+
+// // 设置cookie
+// func SetCookie(ctx iris.Context, name, value string) {
+// 	ctx.SetCookieKV(name, value)
+// }
 
 // 删除cookie
-func RemoveCookie(ctx iris.Context, name string) {
-	ctx.RemoveCookie(name)
-}
+// func RemoveCookie(ctx *gin.Context, name string) {
+// 	ctx.RemoveCookie(name)
+// }
 
 // 获取请求完成路径
-func GetFullPath(ctx iris.Context) string {
-	request := ctx.Request()
-	scheme  := "http://"
+func GetFullPath(ctx *gin.Context) string {
+	request := ctx.Request
+	scheme := "http://"
 	if request.TLS != nil {
-        scheme = "https://"
-    }
+		scheme = "https://"
+	}
 	return strings.Join([]string{scheme, request.Host, request.RequestURI}, "")
 }

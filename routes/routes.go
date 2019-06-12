@@ -1,74 +1,78 @@
 package routes
 
 import (
-	"github.com/kataras/iris"
+	"github.com/gin-gonic/gin"
 	"github.com/sisimengchen/serverme/controllers"
 	"github.com/sisimengchen/serverme/middleware"
-	// "github.com/dgrijalva/jwt-go"
-    // jwtmiddleware "github.com/iris-contrib/middleware/jwt"
+	"net/http"
 )
 
-func RoutesInit(app *iris.Application) {
-	// favicon
-	app.Favicon("./static/favicon.ico")
-	// 静态资源
-	app.StaticWeb("/static", "./static")
-	// 静态资源
-	app.StaticWeb("/public", "./public")
-	// 单页路由
-	app.Get("/", middleware.Auth, func(ctx iris.Context) {
-		ctx.View("index.html")
+func RoutesInit(router *gin.Engine) {
+
+	router.StaticFile("/favicon.ico", "./static/favicon.ico")
+
+	router.Static("/static", "./static")
+
+	router.Static("/public", "./public")
+
+	router.Static("/uploads", "./uploads")
+
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "index.html", nil)
 	})
-	// page路由 (视图层)
-	page := app.Party("/page", middleware.Auth)
+
+	page := router.Group("/page")
 	{
-		page.Get("/*", func(ctx iris.Context) {
-			ctx.View("index.html")
+		page.GET("/", func(ctx *gin.Context) {
+			ctx.HTML(http.StatusOK, "index.html", nil)
+		})
+		page.GET("/:any", func(ctx *gin.Context) {
+			ctx.HTML(http.StatusOK, "index.html", nil)
 		})
 	}
-	// api路由（接口层）
-	api := app.Party("/api")
+
+	api := router.Group("/api")
 	{
-		api.Post("/login", controllers.Login)
-		api.Get("/logout", controllers.Logout)
-		api.Post("/reg", controllers.CreateUser)
+		api.POST("/login", controllers.Login)
+		api.GET("/logout", controllers.Logout)
+		api.POST("/reg", controllers.CreateUser)
 
-		auth := api.Party("/auth", middleware.Auth)
+		auth := api.Group("/auth", middleware.Auth())
 		{
-			auth.Get("/user", controllers.GetUser)
-			auth.Post("/passreset", controllers.UpdateUserPassword)
-			auth.Post("/updateuser", controllers.UpdateUser)
-			auth.Post("/updateavatar", controllers.UpdateAvatar)
-			
-			common := api.Party("/common")
+			auth.GET("/user", controllers.GetUser)
+			auth.POST("/passreset", controllers.UpdateUserPassword)
+			auth.POST("/updateuser", controllers.UpdateUser)
+			auth.POST("/updateavatar", controllers.UpdateAvatar)
+
+			common := auth.Group("/common")
 			{
-				common.Post("/upload", controllers.Upload)
+				common.POST("/upload", controllers.Upload)
 			}
 
-			book := api.Party("/auth/book")
+			bookcatalog := auth.Group("/bookcatalog")
 			{
-				book.Post("/add", controllers.CreateBook)
-				book.Get("/get", controllers.GetBookByID)
-				book.Get("/getbyname", controllers.GetBooksByName)
-				book.Get("/getbycatalog", controllers.GetBooksByCatalogId)
-				book.Get("/getall", controllers.GetBooks)
+				bookcatalog.POST("/add", controllers.CreateBookCatalog)
+				bookcatalog.GET("/get", controllers.GetBookCatalogByID)
+				bookcatalog.GET("/getall", controllers.GetBookCatalogs)
 			}
-		
-			chapter := api.Party("/auth/chapter")
+
+			book := auth.Group("/book")
 			{
-				chapter.Post("/add", controllers.CreateChapter)
-				chapter.Post("/setpath", controllers.SetChapterPath)
-				chapter.Get("/get", controllers.GetChapterByID)
-				chapter.Get("/gets", controllers.GetChaptersByBookId)
-				chapter.Get("/getcontent", controllers.GetChapterContent)
+				book.POST("/add", controllers.CreateBook)
+				book.GET("/get", controllers.GetBookByID)
+				book.GET("/getbyname", controllers.GetBooksByName)
+				book.GET("/getbycatalog", controllers.GetBooksByCatalogId)
+				book.GET("/getall", controllers.GetBooks)
 			}
-		
-			bookcatalog := api.Party("/auth/bookcatalog")
+
+			chapter := auth.Group("/chapter")
 			{
-				bookcatalog.Post("/add", controllers.CreateBookCatalog)
-				bookcatalog.Get("/get", controllers.GetBookCatalogByID)
-				bookcatalog.Get("/getall", controllers.GetBookCatalogs)
+				chapter.POST("/add", controllers.CreateChapter)
+				chapter.POST("/setpath", controllers.SetChapterPath)
+				chapter.GET("/get", controllers.GetChapterByID)
+				chapter.GET("/gets", controllers.GetChaptersByBookId)
+				chapter.GET("/getcontent", controllers.GetChapterContent)
 			}
-		}		
+		}
 	}
 }

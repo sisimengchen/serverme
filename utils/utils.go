@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // 获取一个uuid字符串

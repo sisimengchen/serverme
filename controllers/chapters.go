@@ -1,26 +1,26 @@
 package controllers
 
 import (
-	"path/filepath"
-	"mime/multipart"
-	"github.com/kataras/iris"
+	"github.com/gin-gonic/gin"
 	"github.com/sisimengchen/serverme/models"
 	"github.com/sisimengchen/serverme/utils/pagination"
+	"mime/multipart"
+	"path/filepath"
 )
 
 // 创建文章
-func CreateChapter(ctx iris.Context) {
-	title := ctx.FormValue("title")
+func CreateChapter(ctx *gin.Context) {
+	title := ctx.PostForm("title")
 	if len(title) == 0 {
 		ctx.JSON(ResponseResource(400, "require title", nil))
 		return
 	}
-	bookId := ctx.FormValue("bookId")
+	bookId := ctx.PostForm("bookId")
 	if len(bookId) == 0 {
 		ctx.JSON(ResponseResource(400, "require bookId", nil))
 		return
 	}
-	chapter, err := models.CreateChapter(&models.Chapters{ Title: title, BookId: bookId })
+	chapter, err := models.CreateChapter(&models.Chapters{Title: title, BookId: bookId})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -28,8 +28,8 @@ func CreateChapter(ctx iris.Context) {
 	}
 }
 
-func GetChapterByID(ctx iris.Context) {
-	id := ctx.URLParam("id")
+func GetChapterByID(ctx *gin.Context) {
+	id := ctx.Query("id")
 	if len(id) == 0 {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
@@ -42,8 +42,8 @@ func GetChapterByID(ctx iris.Context) {
 	}
 }
 
-func GetChapterByTitle(ctx iris.Context) {
-	title := ctx.URLParam("title")
+func GetChapterByTitle(ctx *gin.Context) {
+	title := ctx.Query("title")
 	if len(title) == 0 {
 		ctx.JSON(ResponseResource(400, "require title", nil))
 		return
@@ -56,8 +56,8 @@ func GetChapterByTitle(ctx iris.Context) {
 	}
 }
 
-func GetChaptersByBookId(ctx iris.Context) {
-	bookId := ctx.URLParam("bookId")
+func GetChaptersByBookId(ctx *gin.Context) {
+	bookId := ctx.Query("bookId")
 	if len(bookId) == 0 {
 		ctx.JSON(ResponseResource(400, "require bookId", nil))
 		return
@@ -71,20 +71,20 @@ func GetChaptersByBookId(ctx iris.Context) {
 	}
 }
 
-func GetChapterContent(ctx iris.Context) {
-	chapterId := ctx.FormValue("chapterId")
-	bookId := ctx.FormValue("bookId")
+func GetChapterContent(ctx *gin.Context) {
+	chapterId := ctx.Query("chapterId")
+	bookId := ctx.Query("bookId")
 	path := filepath.Join("./bookstore", bookId, chapterId)
-	ctx.ServeFile(path, true)
+	ctx.File(path)
 }
 
-func SetChapterPath(ctx iris.Context) {
-	chapterId := ctx.FormValue("chapterId")
+func SetChapterPath(ctx *gin.Context) {
+	chapterId := ctx.PostForm("chapterId")
 	if len(chapterId) == 0 {
 		ctx.JSON(ResponseResource(400, "require chapterId", nil))
 		return
 	}
-	bookId := ctx.FormValue("bookId")
+	bookId := ctx.PostForm("bookId")
 	if len(bookId) == 0 {
 		ctx.JSON(ResponseResource(400, "require bookId", nil))
 		return
@@ -108,9 +108,8 @@ func SetChapterPath(ctx iris.Context) {
 	}
 }
 
-func beforeChapterSave(ctx iris.Context, file *multipart.FileHeader, fileResponse *FileResponse) {
-	file.Filename = ctx.FormValue("chapterId")
+func beforeChapterSave(ctx *gin.Context, file *multipart.FileHeader, fileResponse *FileResponse) {
+	file.Filename = ctx.PostForm("chapterId")
 	fileResponse.Name = file.Filename
 	fileResponse.ContentType = file.Header["Content-Type"][0]
 }
-

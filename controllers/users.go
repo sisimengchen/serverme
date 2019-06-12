@@ -1,48 +1,48 @@
 package controllers
 
 import (
-	"path/filepath"
-	"mime/multipart"
-	"github.com/kataras/iris"
+	"github.com/gin-gonic/gin"
 	"github.com/sisimengchen/serverme/models"
 	"github.com/sisimengchen/serverme/utils"
+	"mime/multipart"
+	"path/filepath"
 )
 
-func Login(ctx iris.Context) {
-	email := ctx.FormValue("email")
+func Login(ctx *gin.Context) {
+	email := ctx.PostForm("email")
 	if len(email) == 0 {
 		ctx.JSON(ResponseResource(400, "require email", nil))
 		return
 	}
-	password := ctx.FormValue("password")
+	password := ctx.PostForm("password")
 	if len(password) == 0 {
 		ctx.JSON(ResponseResource(400, "require password", nil))
 		return
 	}
-	user, err := models.GetUser(&models.Users{ Email: email })
+	user, err := models.GetUser(&models.Users{Email: email})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return
 	}
 	isPass, err := utils.ValidatePassword(password, user.Password)
 	if isPass {
-		utils.SetSecureCookie(ctx, "fess", user.ID)
+		ctx.SetCookie("fess", user.ID, 3600, "/", "", false, true)
+		// utils.SetSecureCookie(ctx, "fess", user.ID)
 		ctx.JSON(ResponseResource(200, "ok", user))
 	} else {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	}
 }
 
-func Logout(ctx iris.Context) {
-	utils.RemoveCookie(ctx, "fess")
-	utils.RemoveCookie(ctx, "fess.sig")
+func Logout(ctx *gin.Context) {
+	ctx.SetCookie("fess", "", -1, "/", "", false, true)
 	ctx.JSON(ResponseResource(200, "ok", nil))
 }
 
-func GetUser(ctx iris.Context) {
-	id := ctx.FormValue("id")
+func GetUser(ctx *gin.Context) {
+	id := ctx.PostForm("id")
 	if len(id) > 0 {
-		user, err := models.GetUser(&models.Users{ ID: id })
+		user, err := models.GetUser(&models.Users{ID: id})
 		if err != nil {
 			ctx.JSON(ResponseResource(400, err.Error(), nil))
 			return
@@ -55,26 +55,26 @@ func GetUser(ctx iris.Context) {
 			return
 		}
 		ctx.JSON(ResponseResource(200, "ok", contextUser))
-	}	
+	}
 }
 
-func CreateUser(ctx iris.Context) {
-	email := ctx.FormValue("email")
+func CreateUser(ctx *gin.Context) {
+	email := ctx.PostForm("email")
 	if len(email) == 0 {
 		ctx.JSON(ResponseResource(400, "require email", nil))
 		return
 	}
-	password := ctx.FormValue("password")
+	password := ctx.PostForm("password")
 	if len(password) == 0 {
 		ctx.JSON(ResponseResource(400, "require password", nil))
 		return
 	}
-	user, _ := models.GetUser(&models.Users{ Email: email })
+	user, _ := models.GetUser(&models.Users{Email: email})
 	if user != nil {
 		ctx.JSON(ResponseResource(400, "another email", user))
 		return
 	}
-	user, err := models.CreateUser(&models.Users{ Email: email, Password: password })
+	user, err := models.CreateUser(&models.Users{Email: email, Password: password})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -83,18 +83,18 @@ func CreateUser(ctx iris.Context) {
 	}
 }
 
-func UpdateUserPassword(ctx iris.Context) {
-	id := ctx.FormValue("id")
+func UpdateUserPassword(ctx *gin.Context) {
+	id := ctx.PostForm("id")
 	if len(id) == 0 {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
 	}
-	password := ctx.FormValue("password")
+	password := ctx.PostForm("password")
 	if len(password) == 0 {
 		ctx.JSON(ResponseResource(400, "require password", nil))
 		return
 	}
-	user, err := models.GetUser(&models.Users{ ID: id })
+	user, err := models.GetUser(&models.Users{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return
@@ -109,15 +109,15 @@ func UpdateUserPassword(ctx iris.Context) {
 	}
 }
 
-func UpdateUser(ctx iris.Context) {
-	id := ctx.FormValue("id")
+func UpdateUser(ctx *gin.Context) {
+	id := ctx.PostForm("id")
 	if len(id) == 0 {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
 	}
-	name := ctx.FormValue("name")
-	phone := ctx.FormValue("phone")
-	user, err := models.GetUser(&models.Users{ ID: id })
+	name := ctx.PostForm("name")
+	phone := ctx.PostForm("phone")
+	user, err := models.GetUser(&models.Users{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return
@@ -132,13 +132,13 @@ func UpdateUser(ctx iris.Context) {
 	}
 }
 
-func UpdateAvatar(ctx iris.Context) {
-	id := ctx.FormValue("id")
+func UpdateAvatar(ctx *gin.Context) {
+	id := ctx.PostForm("id")
 	if len(id) == 0 {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
 	}
-	user, err := models.GetUser(&models.Users{ ID: id })
+	user, err := models.GetUser(&models.Users{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return
@@ -157,8 +157,8 @@ func UpdateAvatar(ctx iris.Context) {
 	}
 }
 
-func beforeAvatarSave(ctx iris.Context, file *multipart.FileHeader, fileResponse *FileResponse) {
-	file.Filename = ctx.FormValue("id")
+func beforeAvatarSave(ctx *gin.Context, file *multipart.FileHeader, fileResponse *FileResponse) {
+	file.Filename = ctx.PostForm("id")
 	fileResponse.Name = file.Filename
 	fileResponse.ContentType = file.Header["Content-Type"][0]
 }

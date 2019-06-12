@@ -4,30 +4,27 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"mime/multipart"
+	// "net/http"
 	"errors"
-	"github.com/kataras/iris"
+	"github.com/gin-gonic/gin"
 	"github.com/sisimengchen/serverme/models"
+	"mime/multipart"
 	"strings"
-	"net/http"
-	// "fmt"
 )
 
-type ResponseJson struct {
-	Data   interface{} `json:"data"`
-	Code   int         `json:"code"`
-	Msg    interface{} `json:"msg"`
-}
-
-func ResponseResource(code int, msg string, objects interface{}) (json *ResponseJson) {
-	json = &ResponseJson{Code: code, Msg: msg, Data: objects}
-	return json
+// 标准化json数据返回
+func ResponseResource(code int, msg string, data interface{}) (int, interface{}) {
+	return 200, gin.H{
+		"code": code,
+		"msg":  msg,
+		"data": data,
+	}
 }
 
 // 获取请求完成路径
-func GetContextUser(ctx iris.Context) (*models.Users, error) {
-	contextUser := ctx.Values().Get("contextUser")
-	if ( contextUser != nil) {
+func GetContextUser(ctx *gin.Context) (*models.Users, error) {
+	contextUser, exists := ctx.Get("contextUser")
+	if exists {
 		user := contextUser.(models.Users)
 		return &user, nil
 	}
@@ -35,21 +32,16 @@ func GetContextUser(ctx iris.Context) (*models.Users, error) {
 }
 
 type FileResponse struct {
-	Index        int    `json:"index"`
-	Size         int64  `json:"size"`
-	ContentType  string `json:"contentType"`
-	Name         string `json:"mame"`
-	Path         string `json:"path"`
-	Url          string `json:"url"`
+	Index       int    `json:"index"`
+	Size        int64  `json:"size"`
+	ContentType string `json:"contentType"`
+	Name        string `json:"mame"`
+	Path        string `json:"path"`
+	Url         string `json:"url"`
 }
 
 // 通用上传
-func Upload(ctx iris.Context)  {
-	_, err := GetContextUser(ctx)
-	if err != nil {
-		ctx.JSON(ResponseResource(401, err.Error(), nil))
-		return
-	}
+func Upload(ctx *gin.Context) {
 	fileResponses, err := FileUpload(ctx, filepath.Join("./uploads"), beforeSave)
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
@@ -58,42 +50,33 @@ func Upload(ctx iris.Context)  {
 	}
 }
 
-// 文件上传公共方法
-func FileUpload(ctx iris.Context, destDirectory string, before ...func(ctx iris.Context, file *multipart.FileHeader, fileResponse *FileResponse)) (fileResponses []*FileResponse, err error) {
-	maxSize := ctx.Application().ConfigurationReadOnly().GetPostMaxMemory()
-	request := ctx.Request()
-	err = request.ParseMultipartForm(maxSize)
+func FileUpload(ctx *gin.Context, destDirectory string, before ...func(ctx *gin.Context, file *multipart.FileHeader, fileResponse *FileResponse)) (fileResponses []*FileResponse, err error) {
+	form, err := ctx.MultipartForm()
 	if err != nil {
 		return nil, err
 	}
 	var totalSize int64
 	var count int
-	if request.MultipartForm != nil {
-		if fhs := request.MultipartForm.File; fhs != nil {  // map[string][]*FileHeader
-			for _, files := range fhs { // 遍历key
-				for _, file := range files { // 遍历文件
-					fileResponse := FileResponse{}
-					for _, b := range before {
-						b(ctx, file, &fileResponse)
-					}
-					err := saveUploadedFile(file, destDirectory, &fileResponse)
-					if err != nil {
-						return nil, err
-					}
-					fileResponse.Index = count
-					fileResponses = append(fileResponses, &fileResponse)
-					totalSize += fileResponse.Size
-					count++
-				}
-			}
+	files := form.File["files"]
+	for _, file := range files {
+		fileResponse := FileResponse{}
+		for _, b := range before {
+			b(ctx, file, &fileResponse)
 		}
-		if count == 0 {
-			return nil, errors.New("no file")
-		} else {
-			return fileResponses, nil
+		err := saveUploadedFile(file, destDirectory, &fileResponse)
+		if err != nil {
+			return nil, err
 		}
+		fileResponse.Index = count
+		fileResponses = append(fileResponses, &fileResponse)
+		totalSize += fileResponse.Size
+		count++
 	}
-	return nil, http.ErrMissingFile
+	if count == 0 {
+		return nil, errors.New("no file")
+	} else {
+		return fileResponses, nil
+	}
 }
 
 func saveUploadedFile(fh *multipart.FileHeader, destDirectory string, fileResponse *FileResponse) (err error) {
@@ -113,17 +96,17 @@ func saveUploadedFile(fh *multipart.FileHeader, destDirectory string, fileRespon
 		return err
 	}
 	defer out.Close()
-	size , err := io.Copy(out, src)
+	size, err := io.Copy(out, src)
 	if err != nil {
 		return err
 	}
 	fileResponse.Size = size
-	fileResponse.Path = strings.Join([]string{"/" , path}, "")
-	fileResponse.Url = strings.Join([]string{"http://localhost:8080/" , path}, "")
+	fileResponse.Path = strings.Join([]string{"/", path}, "")
+	fileResponse.Url = strings.Join([]string{"http://localhost:8080/", path}, "")
 	return nil
 }
 
-func beforeSave(ctx iris.Context, file *multipart.FileHeader, fileResponse *FileResponse) {
+func beforeSave(ctx *gin.Context, file *multipart.FileHeader, fileResponse *FileResponse) {
 	fileResponse.Name = file.Filename
 	fileResponse.ContentType = file.Header["Content-Type"][0]
 }

@@ -3,8 +3,9 @@ package app
 import (
 	// "fmt"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/logger"
-	"github.com/kataras/iris/middleware/recover"
+	// "github.com/kataras/iris/middleware/logger"
+	// "github.com/kataras/iris/middleware/recover"
+	"github.com/gin-gonic/gin"
 	"github.com/sisimengchen/serverme/database"
 	"github.com/sisimengchen/serverme/models"
 	"github.com/sisimengchen/serverme/routes"
@@ -26,11 +27,11 @@ func RegisterErrors(app *iris.Application) {
 	})
 }
 
-func RegisterMiddleware(app *iris.Application) {
+func RegisterMiddleware(engine *gin.Engine) {
 	// 恢复中间件
-	app.Use(recover.New())
+	engine.Use(gin.Logger())
 	// 日志中间件
-	app.Use(logger.New())
+	engine.Use(gin.Recovery())
 	// // 鉴权中间件
 	// app.UseGlobal(middleware.Auth)
 }
@@ -47,19 +48,24 @@ func RegisterDatabase(app *iris.Application) {
 	})
 }
 
-func AppInit() *iris.Application {
+func EngineRouter() *gin.Engine {
 	// 创建iris应用
-	app := iris.New()
+	router := gin.New()
+	// 恢复中间件
+	router.Use(gin.Logger())
+	// 日志中间件
+	router.Use(gin.Recovery())
 	// 注册中间件
-	RegisterMiddleware(app)
+	// RegisterMiddleware(engine)
 	// 注册错误处理
-	RegisterErrors(app)
+	// RegisterErrors(app)
 	// 注册数据库
-	RegisterDatabase(app)
+	// RegisterDatabase(app)
 	// 注册模板 Reload(true)只需要在开发环境开启
-	app.RegisterView(iris.HTML("./static", ".html").Reload(true))
+	// app.RegisterView(iris.HTML("./static", ".html").Reload(true))
+	router.LoadHTMLGlob("./static/*")
 	// 注册路由
-	routes.RoutesInit(app)
-	
-	return app
+	routes.RoutesInit(router)
+
+	return router
 }
