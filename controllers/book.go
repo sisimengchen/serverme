@@ -93,3 +93,13 @@ func GetBooks(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(200, "ok", books))
 	}
 }
+
+func GetHotBooks(ctx *gin.Context) {
+	offset, limit := pagination.GetPage(ctx)
+	books, err := models.GetHotBooks(offset, limit, &models.Book{})
+	if err != nil {
+		ctx.JSON(ResponseResource(400, err.Error(), nil))
+	} else {
+		ctx.JSON(ResponseResource(200, "ok", books))
+	}
+}

@@ -72,8 +72,18 @@ func GetChaptersByBookId(ctx *gin.Context) {
 }
 
 func GetChapterContent(ctx *gin.Context) {
-	chapterId := ctx.Query("chapterId")
 	bookId := ctx.Query("bookId")
+	if len(bookId) == 0 {
+		ctx.JSON(ResponseResource(400, "require bookId", nil))
+		return
+	}
+	chapterId := ctx.Query("chapterId")
+	if len(chapterId) == 0 {
+		ctx.JSON(ResponseResource(400, "require chapterId", nil))
+		return
+	}
+	models.AddBookRead(bookId)
+	models.AddChapterRead(chapterId)
 	path := filepath.Join("./bookstore", bookId, chapterId)
 	ctx.File(path)
 }

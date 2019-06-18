@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"github.com/sisimengchen/serverme/utils"
 	"time"
 )
@@ -63,8 +64,29 @@ func GetBook(book *Book) (*Book, error) {
 func GetBooks(offset int, limit int, book *Book) (*[]Book, error) {
 	books := []Book{}
 	if err := DB.Preload("Author").Preload("Catalog").Where(book).Offset(offset).Limit(limit).Find(&books).Error; err != nil {
-		fmt.Printf("GetBooksByCatalogIdErr:%s", err)
+		fmt.Printf("GetBooksErr:%s", err)
 		return nil, err
 	}
 	return &books, nil
+}
+
+// 查询热门图书（阅读量排序）
+func GetHotBooks(offset int, limit int, book *Book) (*[]Book, error) {
+	books := []Book{}
+	if err := DB.Preload("Author").Preload("Catalog").Where(book).Offset(offset).Limit(limit).Order("read desc").Find(&books).Error; err != nil {
+		fmt.Printf("GetHotBooksErr:%s", err)
+		return nil, err
+	}
+	return &books, nil
+}
+
+// 增加阅读量
+func AddBookRead(id string) (*Book, error) {
+	book := &Book{ID: id}
+	if err := DB.Model(book).UpdateColumn("read", gorm.Expr("read + ?", 1)).Error; err != nil {
+		fmt.Printf("AddBookReadErr:%s", err)
+		return nil, err
+	} else {
+		return book, nil
+	}
 }

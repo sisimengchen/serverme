@@ -39,8 +39,9 @@ func Init(router *gin.Engine) {
 		api.POST("/login", controllers.Login)
 		api.GET("/logout", controllers.Logout)
 		api.POST("/reg", controllers.CreateUser)
+		api.GET("/hot", controllers.GetHotBooks)
 
-		auth := api.Group("/auth", middleware.Auth(), middleware.Casbin())
+		auth := api.Group("/auth", middleware.Auth() /*, middleware.Casbin()*/)
 		{
 			auth.GET("/user", controllers.GetUser)
 			auth.GET("/userroles", controllers.GetUserWithRoles)

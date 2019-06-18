@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"github.com/sisimengchen/serverme/utils"
 	"time"
 )
@@ -14,6 +15,7 @@ type Chapter struct {
 	Book        *Book      `gorm:"association_foreignkey:ID" json:"book"`
 	Path        string     `gorm:"type:text;" json:"path"`
 	State       int        `gorm:"type:int(11);default:'0'" json:"state"`
+	Read        int        `gorm:"type:int(11);default:'0'" json:"read"`
 	WordCount   int        `gorm:"type:int(11);default:'0'" json:"wordCount"`
 	CreatedAt   *time.Time `json:"createdAt"`
 	UpdatedAt   *time.Time `json:"updatedAt"`
@@ -58,4 +60,15 @@ func GetChapters(offset int, limit int, chapter *Chapter) (*[]Chapter, error) {
 		return nil, err
 	}
 	return &chapters, nil
+}
+
+// 增加阅读量
+func AddChapterRead(id string) (*Chapter, error) {
+	chapter := &Chapter{ID: id}
+	if err := DB.Model(chapter).UpdateColumn("read", gorm.Expr("read + ?", 1)).Error; err != nil {
+		fmt.Printf("AddBookReadErr:%s", err)
+		return nil, err
+	} else {
+		return chapter, nil
+	}
 }
