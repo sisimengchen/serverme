@@ -37,6 +37,7 @@ func Casbin( /*enforcer *casbin.Enforcer*/ ) gin.HandlerFunc {
 				ctx.JSON(controllers.ResponseResource(http.StatusForbidden, "无权限", nil))
 			}
 			ctx.Abort()
+			return
 		}
 		ctx.Next()
 	}
