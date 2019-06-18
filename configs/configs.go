@@ -9,7 +9,7 @@ var (
 	Viper = viper.New()
 )
 
-func New() {
+func Init() {
 	Viper.AddConfigPath("./configs")
 	Viper.SetConfigName("config.development")
 	Viper.SetConfigType("yaml")

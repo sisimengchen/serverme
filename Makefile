@@ -5,7 +5,6 @@ build:
 	cd ./app && go fmt
 	cd ./configs && go fmt
 	cd ./controllers && go fmt 
-	cd ./database && go fmt 
 	cd ./middleware && go fmt 
 	cd ./models && go fmt 
 	cd ./routes && go fmt 

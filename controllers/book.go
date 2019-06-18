@@ -32,7 +32,7 @@ func CreateBook(ctx *gin.Context) {
 		authorId = contextUser.ID
 	}
 	cover := ctx.PostForm("cover")
-	book, err := models.CreateBook(&models.Books{Name: name, Description: description, AuthorId: authorId, CatalogId: catalogId, Cover: cover}, contextUser)
+	book, err := models.CreateBook(&models.Book{Name: name, Description: description, AuthorId: authorId, CatalogId: catalogId, Cover: cover}, contextUser)
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -46,7 +46,7 @@ func GetBookByID(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
 	}
-	book, err := models.GetBook(&models.Books{ID: id})
+	book, err := models.GetBook(&models.Book{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -61,7 +61,7 @@ func GetBooksByName(ctx *gin.Context) {
 		return
 	}
 	offset, limit := pagination.GetPage(ctx)
-	books, err := models.GetBooks(offset, limit, &models.Books{Name: name})
+	books, err := models.GetBooks(offset, limit, &models.Book{Name: name})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -76,7 +76,7 @@ func GetBooksByCatalogId(ctx *gin.Context) {
 		return
 	}
 	offset, limit := pagination.GetPage(ctx)
-	books, err := models.GetBooks(offset, limit, &models.Books{CatalogId: catalogId})
+	books, err := models.GetBooks(offset, limit, &models.Book{CatalogId: catalogId})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -86,7 +86,7 @@ func GetBooksByCatalogId(ctx *gin.Context) {
 
 func GetBooks(ctx *gin.Context) {
 	offset, limit := pagination.GetPage(ctx)
-	books, err := models.GetBooks(offset, limit, &models.Books{})
+	books, err := models.GetBooks(offset, limit, &models.Book{})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {

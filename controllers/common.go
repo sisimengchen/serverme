@@ -22,10 +22,10 @@ func ResponseResource(code int, msg string, data interface{}) (int, interface{})
 }
 
 // 获取请求完成路径
-func GetContextUser(ctx *gin.Context) (*models.Users, error) {
+func GetContextUser(ctx *gin.Context) (*models.User, error) {
 	contextUser, exists := ctx.Get("contextUser")
 	if exists {
-		user := contextUser.(models.Users)
+		user := contextUser.(models.User)
 		return &user, nil
 	}
 	return nil, errors.New("unlogin")

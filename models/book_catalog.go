@@ -2,12 +2,11 @@ package models
 
 import (
 	"fmt"
-	"github.com/sisimengchen/serverme/database"
 	"github.com/sisimengchen/serverme/utils"
 	"time"
 )
 
-type BookCatalogs struct {
+type BookCatalog struct {
 	ID        string     `gorm:"type:varchar(100);primary_key;" json:"id"`
 	Name      string     `gorm:"type:varchar(100);not null;unique_index;" json:"name"`
 	CreatedAt *time.Time `json:"-"`
@@ -16,9 +15,9 @@ type BookCatalogs struct {
 }
 
 // 创建分类
-func CreateBookCatalog(bookCatalog *BookCatalogs) (*BookCatalogs, error) {
+func CreateBookCatalog(bookCatalog *BookCatalog) (*BookCatalog, error) {
 	bookCatalog.ID = utils.GetUUID()
-	if err := database.DB.Create(bookCatalog).Error; err != nil {
+	if err := DB.Create(bookCatalog).Error; err != nil {
 		fmt.Printf("CreateBookCatalogErr:%s", err)
 		return nil, err
 	} else {
@@ -27,8 +26,8 @@ func CreateBookCatalog(bookCatalog *BookCatalogs) (*BookCatalogs, error) {
 }
 
 // 更新分类
-func UpdateBookCatalog(bookCatalog *BookCatalogs) (*BookCatalogs, error) {
-	if err := database.DB.Model(bookCatalog).Updates(bookCatalog).Error; err != nil {
+func UpdateBookCatalog(bookCatalog *BookCatalog) (*BookCatalog, error) {
+	if err := DB.Model(bookCatalog).Updates(bookCatalog).Error; err != nil {
 		fmt.Printf("UpdatedBookCatalogErr:%s", err)
 		return nil, err
 	} else {
@@ -37,8 +36,8 @@ func UpdateBookCatalog(bookCatalog *BookCatalogs) (*BookCatalogs, error) {
 }
 
 // 查询分类
-func GetBookCatalog(bookCatalog *BookCatalogs) (*BookCatalogs, error) {
-	if err := database.DB.Where(&bookCatalog).First(&bookCatalog).Error; err != nil {
+func GetBookCatalog(bookCatalog *BookCatalog) (*BookCatalog, error) {
+	if err := DB.Where(&bookCatalog).First(&bookCatalog).Error; err != nil {
 		fmt.Printf("GetBookCatalogErr:%s", err)
 		return nil, err
 	}
@@ -46,9 +45,9 @@ func GetBookCatalog(bookCatalog *BookCatalogs) (*BookCatalogs, error) {
 }
 
 // 获取或有图书分类
-func GetBookCatalogs(offset int, limit int, bookCatalog *BookCatalogs) (*[]BookCatalogs, error) {
-	bookCatalogs := []BookCatalogs{}
-	if err := database.DB.Where(bookCatalog).Offset(offset).Limit(limit).Find(&bookCatalogs).Error; err != nil {
+func GetBookCatalogs(offset int, limit int, bookCatalog *BookCatalog) (*[]BookCatalog, error) {
+	bookCatalogs := []BookCatalog{}
+	if err := DB.Where(bookCatalog).Offset(offset).Limit(limit).Find(&bookCatalogs).Error; err != nil {
 		fmt.Printf("GetBookCatalogsErr:%s", err)
 		return nil, err
 	}

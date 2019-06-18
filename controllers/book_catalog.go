@@ -12,7 +12,7 @@ func CreateBookCatalog(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require name", nil))
 		return
 	}
-	bookCatalog, err := models.CreateBookCatalog(&models.BookCatalogs{Name: name})
+	bookCatalog, err := models.CreateBookCatalog(&models.BookCatalog{Name: name})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -26,7 +26,7 @@ func GetBookCatalogByID(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
 	}
-	bookCatalog, err := models.GetBookCatalog(&models.BookCatalogs{ID: id})
+	bookCatalog, err := models.GetBookCatalog(&models.BookCatalog{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -36,7 +36,7 @@ func GetBookCatalogByID(ctx *gin.Context) {
 
 func GetBookCatalogs(ctx *gin.Context) {
 	offset, limit := pagination.GetPage(ctx)
-	bookCatalogs, err := models.GetBookCatalogs(offset, limit, &models.BookCatalogs{})
+	bookCatalogs, err := models.GetBookCatalogs(offset, limit, &models.BookCatalog{})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {

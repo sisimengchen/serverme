@@ -9,7 +9,7 @@ import (
 )
 
 // 重定向的url之后要做成可配置
-func Auth() gin.HandlerFunc {
+func BasicAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, _ := ctx.Cookie("token")
 		if len(id) > 0 {

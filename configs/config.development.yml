@@ -2,9 +2,13 @@ name: serverme
 app:
   addr: :8080
 
+fe:
+  views: views
+  static: static
+  loginurl: /page/login
+
 db:
   type: sqlite3
   path: tmp/test.db
 
-static: static
 pageSize: 20

@@ -19,15 +19,15 @@ func Login(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require password", nil))
 		return
 	}
-	user, err := models.GetUser(&models.Users{Email: email})
+	user, err := models.GetUser(&models.User{Email: email})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return
 	}
 	isPass, err := utils.ValidatePassword(password, user.Password)
 	if isPass {
-		ctx.SetCookie("fess", user.ID, 3600, "/", "", false, true)
-		// utils.SetSecureCookie(ctx, "fess", user.ID)
+		ctx.SetCookie("token", user.ID, 36000, "/", "", false, true)
+		// utils.SetSecureCookie(ctx, "token", user.ID)
 		ctx.JSON(ResponseResource(200, "ok", user))
 	} else {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
@@ -35,14 +35,14 @@ func Login(ctx *gin.Context) {
 }
 
 func Logout(ctx *gin.Context) {
-	ctx.SetCookie("fess", "", -1, "/", "", false, true)
+	ctx.SetCookie("token", "", -1, "/", "", false, true)
 	ctx.JSON(ResponseResource(200, "ok", nil))
 }
 
 func GetUser(ctx *gin.Context) {
 	id := ctx.PostForm("id")
 	if len(id) > 0 {
-		user, err := models.GetUser(&models.Users{ID: id})
+		user, err := models.GetUser(&models.User{ID: id})
 		if err != nil {
 			ctx.JSON(ResponseResource(400, err.Error(), nil))
 			return
@@ -58,6 +58,54 @@ func GetUser(ctx *gin.Context) {
 	}
 }
 
+func GetUserWithRoles(ctx *gin.Context) {
+	id := ctx.PostForm("id")
+	if len(id) > 0 {
+		user, err := models.GetUserWithRoles(&models.User{ID: id})
+		if err != nil {
+			ctx.JSON(ResponseResource(400, err.Error(), nil))
+			return
+		}
+		ctx.JSON(ResponseResource(200, "ok", user))
+	} else {
+		contextUser, err := GetContextUser(ctx)
+		if err != nil {
+			ctx.JSON(ResponseResource(401, err.Error(), nil))
+			return
+		}
+		user, err := models.GetUserWithRoles(&models.User{ID: contextUser.ID})
+		if err != nil {
+			ctx.JSON(ResponseResource(400, err.Error(), nil))
+			return
+		}
+		ctx.JSON(ResponseResource(200, "ok", user))
+	}
+}
+
+func GetUserRoles(ctx *gin.Context) {
+	id := ctx.PostForm("id")
+	if len(id) > 0 {
+		user, err := models.GetUserRoles(&models.User{ID: id})
+		if err != nil {
+			ctx.JSON(ResponseResource(400, err.Error(), nil))
+			return
+		}
+		ctx.JSON(ResponseResource(200, "ok", user))
+	} else {
+		contextUser, err := GetContextUser(ctx)
+		if err != nil {
+			ctx.JSON(ResponseResource(401, err.Error(), nil))
+			return
+		}
+		userRoles, err := models.GetUserRoles(&models.User{ID: contextUser.ID})
+		if err != nil {
+			ctx.JSON(ResponseResource(400, err.Error(), nil))
+			return
+		}
+		ctx.JSON(ResponseResource(200, "ok", userRoles))
+	}
+}
+
 func CreateUser(ctx *gin.Context) {
 	email := ctx.PostForm("email")
 	if len(email) == 0 {
@@ -69,12 +117,12 @@ func CreateUser(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require password", nil))
 		return
 	}
-	user, _ := models.GetUser(&models.Users{Email: email})
+	user, _ := models.GetUser(&models.User{Email: email})
 	if user != nil {
 		ctx.JSON(ResponseResource(400, "another email", user))
 		return
 	}
-	user, err := models.CreateUser(&models.Users{Email: email, Password: password})
+	user, err := models.CreateUser(&models.User{Email: email, Password: password})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -94,7 +142,7 @@ func UpdateUserPassword(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require password", nil))
 		return
 	}
-	user, err := models.GetUser(&models.Users{ID: id})
+	user, err := models.GetUser(&models.User{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return
@@ -117,7 +165,7 @@ func UpdateUser(ctx *gin.Context) {
 	}
 	name := ctx.PostForm("name")
 	phone := ctx.PostForm("phone")
-	user, err := models.GetUser(&models.Users{ID: id})
+	user, err := models.GetUser(&models.User{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return
@@ -138,7 +186,7 @@ func UpdateAvatar(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
 	}
-	user, err := models.GetUser(&models.Users{ID: id})
+	user, err := models.GetUser(&models.User{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return

@@ -20,7 +20,7 @@ func CreateChapter(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require bookId", nil))
 		return
 	}
-	chapter, err := models.CreateChapter(&models.Chapters{Title: title, BookId: bookId})
+	chapter, err := models.CreateChapter(&models.Chapter{Title: title, BookId: bookId})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -34,7 +34,7 @@ func GetChapterByID(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require id", nil))
 		return
 	}
-	chapter, err := models.GetChapter(&models.Chapters{ID: id})
+	chapter, err := models.GetChapter(&models.Chapter{ID: id})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -48,7 +48,7 @@ func GetChapterByTitle(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require title", nil))
 		return
 	}
-	chapter, err := models.GetChapter(&models.Chapters{Title: title})
+	chapter, err := models.GetChapter(&models.Chapter{Title: title})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -63,7 +63,7 @@ func GetChaptersByBookId(ctx *gin.Context) {
 		return
 	}
 	offset, limit := pagination.GetPage(ctx)
-	chapters, err := models.GetChapters(offset, limit, &models.Chapters{BookId: bookId})
+	chapters, err := models.GetChapters(offset, limit, &models.Chapter{BookId: bookId})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 	} else {
@@ -89,7 +89,7 @@ func SetChapterPath(ctx *gin.Context) {
 		ctx.JSON(ResponseResource(400, "require bookId", nil))
 		return
 	}
-	chapter, err := models.GetChapter(&models.Chapters{ID: chapterId, BookId: bookId})
+	chapter, err := models.GetChapter(&models.Chapter{ID: chapterId, BookId: bookId})
 	if err != nil {
 		ctx.JSON(ResponseResource(400, err.Error(), nil))
 		return
