@@ -7,8 +7,8 @@ import (
 )
 
 type BookCatalog struct {
-	ID        string     `gorm:"type:varchar(100);primary_key;" json:"id"`
-	Name      string     `gorm:"type:varchar(100);not null;unique_index;" json:"name"`
+	ID        string     `gorm:"type:varchar(36);primary_key;" json:"id"`
+	Name      string     `gorm:"type:varchar(36);not null;unique_index;" json:"name"`
 	CreatedAt *time.Time `json:"-"`
 	UpdatedAt *time.Time `json:"-"`
 	DeletedAt *time.Time `json:"-"`

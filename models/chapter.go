@@ -8,8 +8,8 @@ import (
 )
 
 type Chapter struct {
-	ID          string     `gorm:"type:varchar(100);primary_key;" json:"id"`
-	Title       string     `gorm:"type:varchar(100);not null;" json:"title"`
+	ID          string     `gorm:"type:varchar(36);primary_key;" json:"id"`
+	Title       string     `gorm:"type:varchar(36);not null;" json:"title"`
 	Description string     `gorm:"type:varchar(100);" json:"description"`
 	BookId      string     `json:"-"`
 	Book        *Book      `gorm:"association_foreignkey:ID" json:"book"`

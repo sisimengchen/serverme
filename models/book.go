@@ -8,10 +8,10 @@ import (
 )
 
 type Book struct {
-	ID           string       `gorm:"type:varchar(100);primary_key;" json:"id"`
+	ID           string       `gorm:"type:varchar(36);primary_key;" json:"id"`
 	AuthorId     string       `json:"-"`
 	Author       *User        `gorm:"association_foreignkey:ID" json:"author"`
-	Name         string       `gorm:"type:varchar(100);not null;" json:"name"`
+	Name         string       `gorm:"type:varchar(36);not null;" json:"name"`
 	Description  string       `gorm:"type:varchar(100);not null;" json:"description"`
 	State        int          `gorm:"type:int(11);default:'0'" json:"state"`
 	Read         int          `gorm:"type:int(11);default:'0'" json:"read"`
@@ -21,8 +21,8 @@ type Book struct {
 	WordCount    int          `gorm:"type:int(11);default:'0'" json:"wordCount"`
 	ChapterCount int          `gorm:"type:int(11);default:'0'" json:"chapterCount"`
 	Cover        string       `gorm:"type:text;" json:"cover"`
-	CreatedBy    string       `gorm:"type:varchar(100);" json:"createdBy"`
-	UpdatedBy    string       `gorm:"type:varchar(100);" json:"updatedBy"`
+	CreatedBy    string       `gorm:"type:varchar(36);" json:"createdBy"`
+	UpdatedBy    string       `gorm:"type:varchar(36);" json:"updatedBy"`
 	CreatedAt    *time.Time   `json:"createdAt"`
 	UpdatedAt    *time.Time   `json:"updatedAt"`
 	DeletedAt    *time.Time   `json:"-"`
